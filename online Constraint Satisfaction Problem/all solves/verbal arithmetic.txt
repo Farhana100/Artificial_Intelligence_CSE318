@@ -1,0 +1,48 @@
+package com.company;
+
+import org.chocosolver.solver.Model;
+import org.chocosolver.solver.Solution;
+import org.chocosolver.solver.variables.IntVar;
+
+public class Main {
+
+    public static void main(String[] args) {
+	// write your code here
+        Model model = new Model("verbal arithmetic");
+
+        /**
+         *     S E N D
+         * +   M O R E
+         * -----------
+         * = M O N E Y
+         *
+         *  8 vars
+         */
+
+        IntVar s = model.intVar("S", 1, 9);
+        IntVar e = model.intVar("E", 0, 9);
+        IntVar n = model.intVar("N", 0, 9);
+        IntVar d = model.intVar("D", 0, 9);
+        IntVar m = model.intVar("M", 1);
+        IntVar o = model.intVar("O", 0, 9);
+        IntVar r = model.intVar("R", 0, 9);
+        IntVar y = model.intVar("Y", 0, 9);
+        IntVar num1 = s.mul(1000).add(e.mul(100), n.mul(10), d).intVar();
+        IntVar num2 = m.mul(1000).add(o.mul(100), r.mul(10), e).intVar();
+        IntVar num3 = m.mul(10000).add(o.mul(1000), n.mul(100), e.mul(10), y).intVar();
+
+        model.allDifferent(s, e, n, d, m, o, r, y).post();
+        model.arithm(num1, "+", num2, "=", num3).post();
+
+        System.out.println(model.toString());
+        Solution solution = model.getSolver().findSolution();
+
+        if(solution != null)
+        {
+            System.out.println(solution.toString());
+        }
+        else {
+            System.out.println("no solution");
+        }
+    }
+}
